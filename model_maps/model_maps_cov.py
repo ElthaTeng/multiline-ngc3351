@@ -8,7 +8,8 @@ Including the covariance matrix from calibration uncertainties, this script
 computes the bestfit/1dmax/mean/median parameter values for each pixel in the 
 galaxy image. Maps are saved as numpy arrays. The output_map input should be 
 set manually. If output_map = 'bestfit', an additional map showing the minimum
-chi^2 value at each pixel will be saved.
+chi^2 value at each pixel will be saved. An option for using priors/constraints 
+is enabled by default and can be disenabled manually.
 
 '''
 
@@ -78,6 +79,12 @@ flux_mod = np.array((np.load(sou_model+'flux_'+model+'_co10.npy').reshape(-1),
                      np.load(sou_model+'flux_'+model+'_c18o32.npy').reshape(-1)))
 shape = flux_mod.shape[1]
 
+# Exclude parameter sets that violate the physical constraints (optional)
+mask = np.load('mask_los50.npy')
+mask[mask==0] = np.nan
+for i in range(nobs):
+    flux_mod[i,:] = flux_mod[i,:] * mask
+
 flux_co10 = np.load(sou_data+'NGC3351_CO10_mom0.npy')
 flux_co21 = np.load(sou_data+'NGC3351_CO21_mom0.npy')
 flux_13co21 = np.load(sou_data+'NGC3351_13CO21_mom0.npy')
@@ -91,13 +98,6 @@ err_13co21 = np.load(sou_data+'errors/NGC3351_13CO21_emom0_broad_nyq.npy')
 err_13co32 = np.load(sou_data+'errors/NGC3351_13CO32_emom0_broad_nyq.npy')
 err_c18o21 = np.load(sou_data+'errors/NGC3351_C18O21_emom0_broad_nyq.npy')
 err_c18o32 = np.load(sou_data+'errors/NGC3351_C18O32_emom0_broad_nyq.npy')
-
-# err_co10 = 0.1 * flux_co10
-# err_co21 = 0.1 * flux_co21
-# err_13co21 = 0.1 * flux_13co21
-# err_13co32 = 0.1 * flux_13co32
-# err_c18o21 = 0.1 * flux_c18o21
-# err_c18o32 = 0.1 * flux_c18o32
 
 data_time = time.time()
 print('Models & data loaded;', data_time-start_time, 'sec elapsed.')
@@ -190,7 +190,7 @@ def prob1d_maps(x,y):
 print('Start multi-processing on output maps')
  
 if output_map == 'bestfit':
-    results = Parallel(n_jobs=10, verbose=5)(delayed(bestfit_maps)(x,y) for x in range(20,55) for y in range(20,55))           
+    results = Parallel(n_jobs=5, verbose=10)(delayed(bestfit_maps)(x,y) for x in range(30,45) for y in range(25,50))           
     for result in results:
         x, y, chi2_min, N_value, T_value, n_value, X1_value, X2_value, phi_value = result
         chi2_map[y,x] = chi2_min
@@ -210,7 +210,7 @@ if output_map == 'bestfit':
     np.save(sou_model+'phi_'+model+'_cov_'+output_map+'.npy', beam_fill)
     
 else:
-    results = Parallel(n_jobs=10, verbose=5)(delayed(prob1d_maps)(x,y) for x in range(20,55) for y in range(20,55))           
+    results = Parallel(n_jobs=5, verbose=10)(delayed(prob1d_maps)(x,y) for x in range(30,45) for y in range(25,50))           
     for result in results:
         x, y, N_value, T_value, n_value, X1_value, X2_value, phi_value = result
         N_co[y,x] = N_value
