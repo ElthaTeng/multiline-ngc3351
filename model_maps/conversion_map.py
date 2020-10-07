@@ -4,13 +4,13 @@ from astropy.io import fits
 from astropy.wcs import WCS
 from matplotlib.colors import LogNorm
 
-model = '1dmax'
+model = 'bestfit'
 fits_map = fits.open('data_image/NGC3351_CO10_ew_broad_nyq.fits')
 map_ew = fits_map[0].data
 map_fwhm = map_ew * 2.35
 wcs = WCS(fits_map[0].header)
 flux_co10 = np.load('data_image/NGC3351_CO10_mom0.npy')
-model_Nco = np.load('radex_model/6d/Nco_6d_'+model+'.npy')
+model_Nco = np.floor(np.load('radex_model/Nco_6d_coarse_cov_los100_'+model+'.npy') * 10) / 10
 
 mask = np.load('mask_139_pixels.npy')
 # model_Nco_neg = np.load('radex_model/Nco_5d_fine_neg1sig.npy') * mask
@@ -20,10 +20,6 @@ mask = np.load('mask_139_pixels.npy')
 # err_co10 = np.load('data_image/errors/NGC3351_CO10_emom0_broad_nyq.npy') * mask
 # err_co10[err_co10 == 0] = np.nan 
 
-# distance = 10.1 #* 10**6  #pc
-# beam_size = 2.1096  #arcsec (fwhm?)
-# nu = 115.2712  #GHz
-
 Nco = 10**model_Nco / 15. * map_fwhm  #cm^-2  
 Nco = Nco * mask
 Nco[Nco == 0] = np.nan
@@ -31,10 +27,6 @@ Xco = 3. * 10**(-4)
 
 masked_co10 = flux_co10 * mask
 masked_co10[masked_co10 == 0] = np.nan  
-
-# mask_file = np.load('radex_model/6d/Nco_6d_prob1d.npy')
-# Nco[mask_file==0] = np.nan
-# masked_co10[mask_file==0] = np.nan
 
 # conversion factors
 X_co = Nco / (Xco*flux_co10)  
@@ -47,19 +39,19 @@ print(np.nansum(Nco), np.nansum(masked_co10))
 print('Average alpha_co is', alpha_avg)
 
 # Conversion factor plot
-# fig = plt.figure()
-# ax = fig.add_subplot(111)  #, projection=wcs
-# #ra = ax.coords[0]
-# #ra.set_major_formatter('hh:mm:ss.s')
-# #plt.imshow(X_co, origin='lower', cmap='inferno', norm=LogNorm(vmin=3e18,vmax=1e22))
-# plt.imshow(alpha_co, origin='lower', cmap='inferno', norm=LogNorm(vmin=0.1,vmax=100))
-# plt.colorbar()
-# plt.contour(flux_co10,origin='lower',levels=(20,50,100,150,200,250,300), colors='grey', linewidths=1)
-# plt.xlim(15,60)
-# plt.ylim(15,60)
-# plt.xlabel('R.A. (J2000)')
-# plt.ylabel('Decl. (J2000)')
-# plt.show()
+fig = plt.figure()
+ax = fig.add_subplot(111, projection=wcs)  #
+ra = ax.coords[0]
+ra.set_major_formatter('hh:mm:ss.s')
+#plt.imshow(X_co, origin='lower', cmap='inferno', norm=LogNorm(vmin=3e18,vmax=1e22))
+plt.imshow(alpha_co, origin='lower', cmap='inferno', norm=LogNorm(vmin=0.1,vmax=20))
+plt.colorbar()
+plt.contour(flux_co10,origin='lower',levels=(20,50,100,150,200,250,300), colors='grey', linewidths=1)
+plt.xlim(15,60)
+plt.ylim(15,60)
+plt.xlabel('R.A. (J2000)')
+plt.ylabel('Decl. (J2000)')
+plt.show()
 
 log_Nco = np.log10(Nco).reshape(-1)
 # Nco_neg = 10**model_Nco_neg / 15. * map_fwhm

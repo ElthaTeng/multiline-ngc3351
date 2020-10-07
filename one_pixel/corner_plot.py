@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import corner
 import time
+from astropy.io import fits
 
 '''
 This script generates a corner plot showing 1D and 2D likelihood distributions for
@@ -54,12 +55,14 @@ X_13to18 = X_13to18.reshape(-1)
 phi = phi.reshape(-1)
 
 '''Set priors (e.g. line-of-sight length) to exclude unreasonable parameter sets (optional) '''
-los_max = 50.
+los_max = 100.
 x_co = 3 * 10**(-4)
-los_length = 10**N_co / (np.sqrt(phi) * 10**n_h2 * x_co)
+map_ew = fits.open('data_image/NGC3351_CO10_ew_broad_nyq.fits')[0].data
+map_fwhm = map_ew * 2.35  # Conversion of 1 sigma to FWHM assuming Gaussian
+los_length = (10**N_co / 15. * map_fwhm[idx_y,idx_x]) / (np.sqrt(phi) * 10**n_h2 * x_co)  
 mask = los_length < los_max * (3.086 * 10**18) 
 print(np.sum(mask),'parameter sets have line-of-sight length smaller than',los_max,'pc')
-#np.save('mask_los50.npy',mask)  # save the mask if first run
+
 chi2_masked = chi2 * mask
 chi2_masked[mask == 0] = np.nan
 

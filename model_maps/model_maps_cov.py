@@ -2,6 +2,7 @@ import numpy as np
 import time
 import corner
 from joblib import Parallel, delayed
+from astropy.io import fits
 
 '''
 Including the covariance matrix from calibration uncertainties, this script 
@@ -21,6 +22,13 @@ sou_model = 'radex_model/'
 sou_data = 'data_image/'
 nobs = 6
 
+# Apply mask or set up constraints if using priors (optional)
+# mask = np.load('mask_los50.npy')
+los_max = 100.
+x_co = 3 * 10**(-4)
+map_ew = fits.open('data_image/NGC3351_CO10_ew_broad_nyq.fits')[0].data
+map_fwhm = map_ew * 2.35  # Conversion of 1 sigma to FWHM assuming Gaussian
+
 # Set parameter ranges
 samples_Nco = np.arange(16.,21.1,0.2).astype('float16')
 samples_Tk = np.arange(1.,2.4,0.1).astype('float16')
@@ -36,17 +44,17 @@ size_x12to13 = samples_X12to13.shape[0]
 size_x13to18 = samples_X13to18.shape[0]
 size_phi = samples_phi.shape[0]
 
-Nco = samples_Nco.reshape(size_N,1,1,1,1,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi),dtype='float16')
+Nco = samples_Nco.reshape(size_N,1,1,1,1,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
 Nco = Nco.reshape(-1)
-Tk = samples_Tk.reshape(1,size_T,1,1,1,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi),dtype='float16')
+Tk = samples_Tk.reshape(1,size_T,1,1,1,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
 Tk = Tk.reshape(-1)
-nH2 = samples_nH2.reshape(1,1,size_n,1,1,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi),dtype='float16')
+nH2 = samples_nH2.reshape(1,1,size_n,1,1,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
 nH2 = nH2.reshape(-1)
-X12to13 = samples_X12to13.reshape(1,1,1,size_x12to13,1,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi),dtype='float16')
+X12to13 = samples_X12to13.reshape(1,1,1,size_x12to13,1,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
 X12to13 = X12to13.reshape(-1)
-X13to18 = samples_X13to18.reshape(1,1,1,1,size_x13to18,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi),dtype='float16')
+X13to18 = samples_X13to18.reshape(1,1,1,1,size_x13to18,1)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
 X13to18 = X13to18.reshape(-1)
-phi = samples_phi.reshape(1,1,1,1,1,size_phi)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi),dtype='float16')
+phi = samples_phi.reshape(1,1,1,1,1,size_phi)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
 phi = phi.reshape(-1)
 
 # Set up correlation matrix between bands
@@ -78,12 +86,6 @@ flux_mod = np.array((np.load(sou_model+'flux_'+model+'_co10.npy').reshape(-1),
                      np.load(sou_model+'flux_'+model+'_c18o21.npy').reshape(-1),
                      np.load(sou_model+'flux_'+model+'_c18o32.npy').reshape(-1)))
 shape = flux_mod.shape[1]
-
-# Exclude parameter sets that violate the physical constraints (optional)
-mask = np.load('mask_los50.npy')
-mask[mask==0] = np.nan
-for i in range(nobs):
-    flux_mod[i,:] = flux_mod[i,:] * mask
 
 flux_co10 = np.load(sou_data+'NGC3351_CO10_mom0.npy')
 flux_co21 = np.load(sou_data+'NGC3351_CO21_mom0.npy')
@@ -130,8 +132,11 @@ def chi2_prob(x,y):
     return chi2_grid, prob_grid
 
 def bestfit_maps(x,y):   
+    los_length = (10**Nco / 15. * map_fwhm[y,x]) / (np.sqrt(phi) * 10**nH2 * x_co)
+    mask = los_length < los_max * (3.086 * 10**18) 
     chi2, _ = chi2_prob(x,y)
-    chi2 = np.array(chi2)
+    chi2 = np.array(chi2) * mask
+    chi2[mask==0] = np.nan
     
     if (np.isnan(chi2)).all():
         return x, y, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan
@@ -201,13 +206,13 @@ if output_map == 'bestfit':
         X_13co2c18o[y,x] = X2_value
         beam_fill[y,x] = phi_value
         
-    np.save(sou_model+'chi2_'+model+'_cov.npy', chi2_map)
-    np.save(sou_model+'Nco_'+model+'_cov_'+output_map+'.npy', N_co)
-    np.save(sou_model+'Tk_'+model+'_cov_'+output_map+'.npy', T_k)
-    np.save(sou_model+'nH2_'+model+'_cov_'+output_map+'.npy', n_h2)
-    np.save(sou_model+'X12to13_'+model+'_cov_'+output_map+'.npy', X_co213co)
-    np.save(sou_model+'X13to18_'+model+'_cov_'+output_map+'.npy', X_13co2c18o)
-    np.save(sou_model+'phi_'+model+'_cov_'+output_map+'.npy', beam_fill)
+    np.save(sou_model+'chi2_'+model+'_cov_los100_.npy', chi2_map)
+    np.save(sou_model+'Nco_'+model+'_cov_los100_'+output_map+'.npy', N_co)
+    np.save(sou_model+'Tk_'+model+'_cov_los100_'+output_map+'.npy', T_k)
+    np.save(sou_model+'nH2_'+model+'_cov_los100_'+output_map+'.npy', n_h2)
+    np.save(sou_model+'X12to13_'+model+'_cov_los100_'+output_map+'.npy', X_co213co)
+    np.save(sou_model+'X13to18_'+model+'_cov_los100_'+output_map+'.npy', X_13co2c18o)
+    np.save(sou_model+'phi_'+model+'_cov_los100_'+output_map+'.npy', beam_fill)
     
 else:
     results = Parallel(n_jobs=5, verbose=10)(delayed(prob1d_maps)(x,y) for x in range(30,45) for y in range(25,50))           
