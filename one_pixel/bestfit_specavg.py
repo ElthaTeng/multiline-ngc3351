@@ -10,8 +10,6 @@ all parameter sets are saved as a 1D numpy array.
 
 '''
 
-idx_x = 35
-idx_y = 39
 extent_nT = (2.,5.25,1,2.4)
 
 sou_model = 'radex_model/'
@@ -25,26 +23,32 @@ model_13co32 = np.load(sou_model+'flux_'+model+'_13co32.npy')
 model_c18o21 = np.load(sou_model+'flux_'+model+'_c18o21.npy')
 model_c18o32 = np.load(sou_model+'flux_'+model+'_c18o32.npy')
 
-flux_co10 = np.load(sou_data+'NGC3351_CO10_mom0.npy').astype('float16')[idx_y,idx_x]
-flux_co21 = np.load(sou_data+'NGC3351_CO21_mom0.npy').astype('float16')[idx_y,idx_x]
-flux_13co21 = np.load(sou_data+'NGC3351_13CO21_mom0.npy').astype('float16')[idx_y,idx_x]
-flux_13co32 = np.load(sou_data+'NGC3351_13CO32_mom0.npy').astype('float16')[idx_y,idx_x]
-flux_c18o21 = np.load(sou_data+'NGC3351_C18O21_mom0.npy').astype('float16')[idx_y,idx_x]
-flux_c18o32 = np.load(sou_data+'NGC3351_C18O32_mom0.npy').astype('float16')[idx_y,idx_x]
+flux_co10 = np.load('fitting_arms.npy')[0,0] * 1.0645 * np.load('fitting_arms.npy')[0,2]
+flux_co21 = np.load('fitting_arms.npy')[1,0] * 1.0645 * np.load('fitting_arms.npy')[1,2]
+flux_13co21 = np.load('fitting_arms.npy')[2,0] * 1.0645 * np.load('fitting_arms.npy')[2,2]
+flux_13co32 = np.load('fitting_arms.npy')[3,0] * 1.0645 * np.load('fitting_arms.npy')[3,2]
+flux_c18o21 = np.load('fitting_arms.npy')[4,0] * 1.0645 * np.load('fitting_arms.npy')[4,2]
+flux_c18o32 = np.load('fitting_arms.npy')[5,0] * 1.0645 * np.load('fitting_arms.npy')[5,2]
 
-# err_co10 = np.load(sou_data+'errors/NGC3351_CO10_emom0_broad_nyq.npy').astype('float16')[idx_y,idx_x]
-# err_co21 = np.load(sou_data+'errors/NGC3351_CO21_emom0_broad_nyq.npy').astype('float16')[idx_y,idx_x]
-# err_13co21 = np.load(sou_data+'errors/NGC3351_13CO21_emom0_broad_nyq.npy').astype('float16')[idx_y,idx_x]
-# err_13co32 = np.load(sou_data+'errors/NGC3351_13CO32_emom0_broad_nyq.npy').astype('float16')[idx_y,idx_x]
-# err_c18o21 = np.load(sou_data+'errors/NGC3351_C18O21_emom0_broad_nyq.npy').astype('float16')[idx_y,idx_x]
-# err_c18o32 = np.load(sou_data+'errors/NGC3351_C18O32_emom0_broad_nyq.npy').astype('float16')[idx_y,idx_x]
+noise_co10 = flux_co10 * (np.load('fitting_arms_errors.npy')[0,0] / np.load('fitting_arms.npy')[0,0] 
+                           + np.load('fitting_arms_errors.npy')[0,2] / np.load('fitting_arms.npy')[0,2])
+noise_co21 = flux_co21 * (np.load('fitting_arms_errors.npy')[1,0] / np.load('fitting_arms.npy')[1,0] 
+                           + np.load('fitting_arms_errors.npy')[1,2] / np.load('fitting_arms.npy')[1,2])
+noise_13co21 = flux_13co21 * (np.load('fitting_arms_errors.npy')[2,0] / np.load('fitting_arms.npy')[2,0] 
+                           + np.load('fitting_arms_errors.npy')[2,2] / np.load('fitting_arms.npy')[2,2])
+noise_13co32 = flux_13co32 * (np.load('fitting_arms_errors.npy')[3,0] / np.load('fitting_arms.npy')[3,0] 
+                           + np.load('fitting_arms_errors.npy')[3,2] / np.load('fitting_arms.npy')[3,2])
+noise_c18o21 = flux_c18o21 * (np.load('fitting_arms_errors.npy')[4,0] / np.load('fitting_arms.npy')[4,0] 
+                           + np.load('fitting_arms_errors.npy')[4,2] / np.load('fitting_arms.npy')[4,2])
+noise_c18o32 = flux_c18o32 * (np.load('fitting_arms_errors.npy')[5,0] / np.load('fitting_arms.npy')[5,0] 
+                           + np.load('fitting_arms_errors.npy')[5,2] / np.load('fitting_arms.npy')[5,2])
 
-err_co10 = 0.1 * flux_co10
-err_co21 = 0.1 * flux_co21
-err_13co21 = 0.1 * flux_13co21
-err_13co32 = 0.1 * flux_13co32
-err_c18o21 = 0.1 * flux_c18o21
-err_c18o32 = 0.1 * flux_c18o32
+err_co10 = np.sqrt(noise_co10**2 + (0.1 * flux_co10)**2)
+err_co21 = np.sqrt(noise_co21**2 + (0.1 * flux_co21)**2)
+err_13co21 = np.sqrt(noise_13co21**2 + (0.1 * flux_13co21)**2)
+err_13co32 = np.sqrt(noise_13co32**2 + (0.1 * flux_13co32)**2)
+err_c18o21 = np.sqrt(noise_c18o21**2 + (0.1 * flux_c18o21)**2)
+err_c18o32 = np.sqrt(noise_c18o32**2 + (0.1 * flux_c18o32)**2)
 
 print('CO (1-0):',flux_co10,'+/-',err_co10)
 print('CO (2-1):',flux_co21,'+/-',err_co21)
@@ -72,7 +76,7 @@ Phi = np.round(0.05*par_min[5] + 0.05, 2)
 
 print('Minumum chi^2 =', np.nanmin(chi_sum), 'at', idx_min)
 print('i.e. (Nco, Tk, nH2, X(12/13), X(13/18), Phi) =', Nco, T_best, n_best, X12to13, X13to18, Phi)
-np.save(sou_model+'chi2_'+model+'_'+str(idx_x)+'_'+str(idx_y), chi_sum)
+np.save(sou_model+'chi2_'+model+'_arms.npy', chi_sum)
 
 idx_N = par_min[0]
 idx_X1 = par_min[3]
@@ -113,7 +117,7 @@ plt.title(r'$N_{CO}$ ='+str(Nco)+r'; $X_{12/13}$ ='+str(X12to13)+r'; $X_{13/18}$
 plt.fill_between([n_best,n_best+0.2], [T_best,T_best], [T_best+0.1,T_best+0.1], color='red', alpha='0.7')
 plt.ylabel(r'$\log\ T_k\ (K)$', fontsize=12)
 plt.xlabel(r'$\log\ n_{H_2}\ (cm^{-3})$', fontsize=12)
-plt.savefig(sou_model+'flux_'+model+'_contours_'+str(idx_x)+'_'+str(idx_y)+'.pdf', bbox_inches='tight', format='pdf')
+plt.savefig(sou_model+'flux_'+model+'_contours_arms.pdf', bbox_inches='tight', format='pdf')
 plt.tight_layout()
 plt.show()
 
