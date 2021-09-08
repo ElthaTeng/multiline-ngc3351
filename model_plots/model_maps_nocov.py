@@ -17,7 +17,7 @@ at each pixel will be saved.
 start_time = time.time()
 
 model = '6d_coarse'
-output_map = 'bestfit'
+output_map = 'median'
 sou_model = 'radex_model/'
 sou_data = 'data_image/'
 
@@ -29,6 +29,12 @@ X_co213co = np.full((75,75), np.nan)
 X_13co2c18o = np.full((75,75), np.nan)
 beam_fill = np.full((75,75), np.nan)
 
+# Set up constraints if using priors (optional)
+los_max = 100.
+x_co = 3 * 10**(-4)
+map_ew = fits.open('data_image/NGC3351_CO10_ew_broad_nyq.fits')[0].data
+map_fwhm = map_ew * 2.35  # Conversion of 1 sigma to FWHM assuming Gaussian
+
 # Set parameter ranges
 samples_Nco = np.arange(16.,21.1,0.2)
 samples_Tk = np.arange(1.,2.4,0.1)
@@ -36,12 +42,6 @@ samples_nH2 = np.arange(2.,5.1,0.2)
 samples_X12to13 = np.arange(10,205,10)
 samples_X13to18 = np.arange(2,21,1.5)
 samples_phi = np.arange(0.05, 1.01, 0.05)
-
-# Set up constraints if using priors (optional)
-los_max = 50.
-x_co = 3 * 10**(-4)
-map_ew = fits.open('data_image/NGC3351_CO10_ew_broad_nyq.fits')[0].data
-map_fwhm = map_ew * 2.35  # Conversion of 1 sigma to FWHM assuming Gaussian
 
 size_N = samples_Nco.shape[0]
 size_T = samples_Tk.shape[0]
@@ -63,12 +63,12 @@ X13to18 = X13to18.reshape(-1)
 phi = samples_phi.reshape(1,1,1,1,1,size_phi)*np.ones((size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
 phi = phi.reshape(-1)
 
-model_co10 = np.load(sou_model+'flux_'+model+'_co10.npy')
+model_co10 = np.load(sou_model+'flux_'+model+'_co10.npy')    
 model_co21 = np.load(sou_model+'flux_'+model+'_co21.npy')
 model_13co21 = np.load(sou_model+'flux_'+model+'_13co21.npy')
 model_13co32 = np.load(sou_model+'flux_'+model+'_13co32.npy')
 model_c18o21 = np.load(sou_model+'flux_'+model+'_c18o21.npy')
-model_c18o32 = np.load(sou_model+'flux_'+model+'_c18o32.npy') 
+model_c18o32 = np.load(sou_model+'flux_'+model+'_c18o32.npy')
 
 flux_co10 = fits.open(sou_data+'NGC3351_CO10_mom0_broad_nyq.fits')[0].data
 flux_co21 = fits.open(sou_data+'NGC3351_CO21_mom0_broad_nyq.fits')[0].data
@@ -107,7 +107,7 @@ def chi2_prob(x,y):
 
 def bestfit_maps(x,y):   
     los_length = (10**Nco / 15. * map_fwhm[y,x]) / (np.sqrt(phi) * 10**nH2 * x_co)
-    mask = los_length < los_max * (3.086 * 10**18)
+    mask = los_length < los_max * (3.086 * 10**18) 
     chi2, _ = chi2_prob(x,y)
     chi2 = np.array(chi2) * mask
     chi2[mask==0] = np.nan
@@ -125,9 +125,9 @@ def bestfit_maps(x,y):
         phi_value = idx_min[5] * (samples_phi[1] - samples_phi[0]) + samples_phi[0]
         return x, y, chi2_min, N_value, T_value, n_value, X1_value, X2_value, phi_value 
 
-def prob1d_maps(x,y): 
+def prob1d_maps(x,y):  
     los_length = (10**Nco / 15. * map_fwhm[y,x]) / (np.sqrt(phi) * 10**nH2 * x_co)
-    mask = los_length < los_max * (3.086 * 10**18)  
+    mask = los_length < los_max * (3.086 * 10**18) 
     chi2, prob = chi2_prob(x,y)
     chi2 = np.array(chi2) * mask
     chi2[mask==0] = np.nan
@@ -171,35 +171,33 @@ def prob1d_maps(x,y):
             phi_value = samples_phi[np.nanargmax(phi_1d)]
             return x, y, N_value, T_value, n_value, X1_value, X2_value, phi_value
             
-        elif output_map == 'peaks':
-            np.save('radex_model/6d_prob1d/Nco_'+model+'_prob1d_'+str(x)+'_'+str(y)+'.npy', N_1d)
-            np.save('radex_model/6d_prob1d/Tk_'+model+'_prob1d_'+str(x)+'_'+str(y)+'.npy', T_1d)
-            np.save('radex_model/6d_prob1d/nH2_'+model+'_prob1d_'+str(x)+'_'+str(y)+'.npy', n_1d)
-            np.save('radex_model/6d_prob1d/X12to13_'+model+'_prob1d_'+str(x)+'_'+str(y)+'.npy', X1_1d)
-            np.save('radex_model/6d_prob1d/X13to18_'+model+'_prob1d_'+str(x)+'_'+str(y)+'.npy', X2_1d)
-            np.save('radex_model/6d_prob1d/phi_'+model+'_prob1d_'+str(x)+'_'+str(y)+'.npy', phi_1d)
-            
-            N_value = count_peaks(N_1d, 0.2*np.nanmax(N_1d))
-            T_value = count_peaks(T_1d, 0.2*np.nanmax(T_1d))
-            n_value = count_peaks(n_1d, 0.2*np.nanmax(n_1d))
-            X1_value = count_peaks(X1_1d, 0.2*np.nanmax(X1_1d))
-            X2_value = count_peaks(X2_1d, 0.2*np.nanmax(X2_1d))
-            phi_value = count_peaks(phi_1d, 0.2*np.nanmax(phi_1d))
-            return x, y, N_value, T_value, n_value, X1_value, X2_value, phi_value 
+        elif output_map == 'median_interp':
+            quantile_values = np.array((0.16,0.5,0.84),dtype='float32')
+            cdf_N = np.cumsum(N_1d)
+            cdf_N /= cdf_N[-1]
+            cdf_T = np.cumsum(T_1d)
+            cdf_T /= cdf_T[-1]
+            cdf_n = np.cumsum(n_1d)
+            cdf_n /= cdf_n[-1]
+            cdf_X1 = np.cumsum(X1_1d)
+            cdf_X1 /= cdf_X1[-1]
+            cdf_X2 = np.cumsum(X2_1d)
+            cdf_X2 /= cdf_X2[-1]
+            cdf_phi = np.cumsum(phi_1d)
+            cdf_phi /= cdf_phi[-1]          
 
-def count_peaks(list, threshold):
-    count = 0
-    for idx, item in enumerate(list[:-1]):
-        if list[idx] < threshold and list[idx+1] > threshold:
-            count += 1
-        if list[idx] > threshold and list[idx+1] < threshold:
-            count += 1
-    return count/2
+            N_value = np.interp(quantile_values[1], cdf_N, samples_Nco)
+            T_value = np.interp(quantile_values[1], cdf_T, samples_Tk)
+            n_value = np.interp(quantile_values[1], cdf_n, samples_nH2)
+            X1_value = np.interp(quantile_values[1], cdf_X1, samples_X12to13)
+            X2_value = np.interp(quantile_values[1], cdf_X2, samples_X13to18)
+            phi_value = np.interp(quantile_values[1], cdf_phi, samples_phi)
+            return x, y, N_value, T_value, n_value, X1_value, X2_value, phi_value 
 
 print('Start multi-processing on output maps')
  
 if output_map == 'bestfit':
-    results = Parallel(n_jobs=20, verbose=10)(delayed(bestfit_maps)(x,y) for x in range(20,55) for y in range(20,55))           
+    results = Parallel(n_jobs=20, verbose=5)(delayed(bestfit_maps)(x,y) for x in range(20,55) for y in range(20,55))           
     for result in results:
         x, y, chi2_min, N_value, T_value, n_value, X1_value, X2_value, phi_value = result
         chi2_map[y,x] = chi2_min
@@ -210,16 +208,16 @@ if output_map == 'bestfit':
         X_13co2c18o[y,x] = X2_value
         beam_fill[y,x] = phi_value
         
-    np.save(sou_model+'chi2_'+model+'.npy', chi2_map)
-    np.save(sou_model+'Nco_'+model+'_'+output_map+'.npy', N_co)
-    np.save(sou_model+'Tk_'+model+'_'+output_map+'.npy', T_k)
-    np.save(sou_model+'nH2_'+model+'_'+output_map+'.npy', n_h2)
-    np.save(sou_model+'X12to13_'+model+'_'+output_map+'.npy', X_co213co)
-    np.save(sou_model+'X13to18_'+model+'_'+output_map+'.npy', X_13co2c18o)
-    np.save(sou_model+'phi_'+model+'_'+output_map+'.npy', beam_fill)
+    np.save(sou_model+'chi2_'+model+'_rmcor_whole_los50.npy', chi2_map)
+    np.save(sou_model+'Nco_'+model+'_rmcor_whole_los50_'+output_map+'.npy', N_co)
+    np.save(sou_model+'Tk_'+model+'_rmcor_whole_los50_'+output_map+'.npy', T_k)
+    np.save(sou_model+'nH2_'+model+'_rmcor_whole_los50_'+output_map+'.npy', n_h2)
+    np.save(sou_model+'X12to13_'+model+'_rmcor_whole_los50_'+output_map+'.npy', X_co213co)
+    np.save(sou_model+'X13to18_'+model+'_rmcor_whole_los50_'+output_map+'.npy', X_13co2c18o)
+    np.save(sou_model+'phi_'+model+'_rmcor_whole_los50_'+output_map+'.npy', beam_fill)
     
 else:
-    results = Parallel(n_jobs=20, verbose=10)(delayed(prob1d_maps)(x,y) for x in range(20,55) for y in range(20,55))           
+    results = Parallel(n_jobs=5, verbose=5)(delayed(prob1d_maps)(x,y) for x in range(20,55) for y in range(20,55))           
     for result in results:
         x, y, N_value, T_value, n_value, X1_value, X2_value, phi_value = result
         N_co[y,x] = N_value
@@ -229,12 +227,12 @@ else:
         X_13co2c18o[y,x] = X2_value
         beam_fill[y,x] = phi_value        
     
-    np.save(sou_model+'Nco_'+model+'_'+output_map+'.npy', N_co)
-    np.save(sou_model+'Tk_'+model+'_'+output_map+'.npy', T_k)
-    np.save(sou_model+'nH2_'+model+'_'+output_map+'.npy', n_h2)
-    np.save(sou_model+'X12to13_'+model+'_'+output_map+'.npy', X_co213co)
-    np.save(sou_model+'X13to18_'+model+'_'+output_map+'.npy', X_13co2c18o)
-    np.save(sou_model+'phi_'+model+'_'+output_map+'.npy', beam_fill)
+    np.save(sou_model+'Nco_'+model+'_rmcor_whole_los100_'+output_map+'.npy', N_co)
+    np.save(sou_model+'Tk_'+model+'_rmcor_whole_los100_'+output_map+'.npy', T_k)
+    np.save(sou_model+'nH2_'+model+'_rmcor_whole_los100_'+output_map+'.npy', n_h2)
+    np.save(sou_model+'X12to13_'+model+'_rmcor_whole_los100_'+output_map+'.npy', X_co213co)
+    np.save(sou_model+'X13to18_'+model+'_rmcor_whole_los100_'+output_map+'.npy', X_13co2c18o)
+    np.save(sou_model+'phi_'+model+'_rmcor_whole_los100_'+output_map+'.npy', beam_fill)
     
 print('Output maps constructed.')
 
