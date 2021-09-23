@@ -16,6 +16,7 @@ extent_nT = (2.,5.25,1,2.4)
 
 sou_model = 'radex_model/'
 sou_data = 'data_image/'
+source = 'NGC3351'
 model = '6d_coarse'
 
 model_co10 = np.load(sou_model+'flux_'+model+'_co10.npy')   
@@ -25,19 +26,19 @@ model_13co32 = np.load(sou_model+'flux_'+model+'_13co32.npy')
 model_c18o21 = np.load(sou_model+'flux_'+model+'_c18o21.npy')
 model_c18o32 = np.load(sou_model+'flux_'+model+'_c18o32.npy')
 
-flux_co10 = np.load(sou_data+'NGC3351_CO10_mom0.npy')[idx_y,idx_x]
-flux_co21 = np.load(sou_data+'NGC3351_CO21_mom0.npy')[idx_y,idx_x]
-flux_13co21 = np.load(sou_data+'NGC3351_13CO21_mom0.npy')[idx_y,idx_x]
-flux_13co32 = np.load(sou_data+'NGC3351_13CO32_mom0.npy')[idx_y,idx_x]
-flux_c18o21 = np.load(sou_data+'NGC3351_C18O21_mom0.npy')[idx_y,idx_x]
-flux_c18o32 = np.load(sou_data+'NGC3351_C18O32_mom0.npy')[idx_y,idx_x]
+flux_co10 = np.load(sou_data+source+'_CO10_mom0.npy')[idx_y,idx_x]
+flux_co21 = np.load(sou_data+source+'_CO21_mom0.npy')[idx_y,idx_x]
+flux_13co21 = np.load(sou_data+source+'_13CO21_mom0.npy')[idx_y,idx_x]
+flux_13co32 = np.load(sou_data+source+'_13CO32_mom0.npy')[idx_y,idx_x]
+flux_c18o21 = np.load(sou_data+source+'_C18O21_mom0.npy')[idx_y,idx_x]
+flux_c18o32 = np.load(sou_data+source+'_C18O32_mom0.npy')[idx_y,idx_x]
 
-noise_co10 = np.load(sou_data+'errors/NGC3351_CO10_emom0_broad_nyq.npy')[idx_y,idx_x]
-noise_co21 = np.load(sou_data+'errors/NGC3351_CO21_emom0_broad_nyq.npy')[idx_y,idx_x]
-noise_13co21 = np.load(sou_data+'errors/NGC3351_13CO21_emom0_broad_nyq.npy')[idx_y,idx_x]
-noise_13co32 = np.load(sou_data+'errors/NGC3351_13CO32_emom0_broad_nyq.npy')[idx_y,idx_x]
-noise_c18o21 = np.load(sou_data+'errors/NGC3351_C18O21_emom0_broad_nyq.npy')[idx_y,idx_x]
-noise_c18o32 = np.load(sou_data+'errors/NGC3351_C18O32_emom0_broad_nyq.npy')[idx_y,idx_x]
+noise_co10 = np.load(sou_data+'errors/'+source+'_CO10_emom0_broad_nyq.npy')[idx_y,idx_x]
+noise_co21 = np.load(sou_data+'errors/'+source+'_CO21_emom0_broad_nyq.npy')[idx_y,idx_x]
+noise_13co21 = np.load(sou_data+'errors/'+source+'_13CO21_emom0_broad_nyq.npy')[idx_y,idx_x]
+noise_13co32 = np.load(sou_data+'errors/'+source+'_13CO32_emom0_broad_nyq.npy')[idx_y,idx_x]
+noise_c18o21 = np.load(sou_data+'errors/'+source+'_C18O21_emom0_broad_nyq.npy')[idx_y,idx_x]
+noise_c18o32 = np.load(sou_data+'errors/'+source+'_C18O32_emom0_broad_nyq.npy')[idx_y,idx_x]
 
 err_co10 = np.sqrt(noise_co10**2 + (0.1 * flux_co10)**2)
 err_co21 = np.sqrt(noise_co21**2 + (0.1 * flux_co21)**2)

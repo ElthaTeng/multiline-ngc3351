@@ -11,7 +11,7 @@ from 'bestfit_onepix.py' or 'bestfit_onepix_cov.py'. Note that 'bestfit_onepix.p
 only saves the chi^2 array, so the probability should be computed in this script.
 
 '''
-
+source = 'NGC3351'
 start_time = time.time()
 print('Constructing inputs for corner plot...')
 
@@ -60,7 +60,7 @@ phi = phi.reshape(-1)
 # Set constraints to exclude unreasonable parameter sets
 los_max = 100.
 x_co = 3 * 10**(-4)
-map_ew = fits.open('data_image/NGC3351_CO10_ew_broad_nyq.fits')[0].data
+map_ew = fits.open('data_image/'+source+'_CO10_ew_broad_nyq.fits')[0].data
 map_fwhm = map_ew * 2.35  # Conversion of 1 sigma to FWHM assuming Gaussian
 if stack:
     los_length = (10**N_co / 15. * np.load('data_cube/fitting_'+region+'.npy')[1,2]) / (np.sqrt(phi) * 10**n_h2 * x_co)
