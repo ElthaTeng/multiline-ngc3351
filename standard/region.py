@@ -40,11 +40,7 @@ plt.imshow(reg_ring, origin='lower', cmap=cmap_ring, vmin=0, vmax=1)
 plt.imshow(reg_arms, origin='lower', cmap=cmap_arms, vmin=0, vmax=1)
 
 plt.tick_params(axis="y", labelleft=False)
-#plt.tick_params(axis="x", labelbottom=False)
 
-# ring = mlines.Line2D([], [], color='y', label='Ring')
-# nucleus = mlines.Line2D([], [], color='m', label='Center - Ring')
-# arms = mlines.Line2D([], [], color='c', label='Arms')
 ring = Patch(facecolor='gold')
 nucleus = Patch(facecolor='magenta')
 arms = Patch(facecolor='cyan')
@@ -56,11 +52,6 @@ plt.legend(handles=[nucleus, null, null, ring, ring, arms],
           ncol=2, handletextpad=0.5, handlelength=1.0, columnspacing=0.5, prop=lprop,
           loc='lower right', fontsize=18)
 
-#legend = plt.legend(handles=[ring, nucleus, arms], prop=lprop)
-#legend.get_frame().set_color('0')
-#legend.get_texts()[0].set_color("y")
-#legend.get_texts()[1].set_color("m")
-#legend.get_texts()[2].set_color("c")
 plt.contour(mom0,origin='lower',levels=(20,50,100,150,200,250), colors='k', linewidths=1)
 cont_radius = plt.contour(radius,origin='lower',levels=(10,20), colors='darkred', linewidths=2)
 manual_locations = [(44, 41), (51, 42)]

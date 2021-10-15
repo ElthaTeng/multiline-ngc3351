@@ -50,7 +50,6 @@ for obs in range(num):
     for i in range(N_pix):
         spec = spec_extract(file, indices[i,1],indices[i,0])
         spec_stacked += spec
-    # print(spec_stacked)
 
     spec_avg = spec_stacked/N_pix
 
@@ -83,7 +82,6 @@ for obs in range(num):
     if obs%(num/2) == 0:
         plt.ylabel('Intensity (K)', fontsize=12)
 
-#print(fit_result,fit_error)
 #np.save('data_cube/fitting_'+region+'.npy',fit_result)
 #np.save('data_cube/fitting_'+region+'_errors.npy',fit_error)
 plt.subplots_adjust(wspace=0.2)

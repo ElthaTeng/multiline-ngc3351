@@ -74,11 +74,3 @@ if par == 'mom0':
 else:
     print(np.nanmedian(maps, axis=(1,2)), '+/-', np.nanstd(maps, axis=(1,2)))
     print(np.nanmean(maps, axis=(1,2)))
-
-'''
-for i in range(7):
-    plt.subplot(2,4,i+1)
-    plt.imshow(maps[i], origin='lower', cmap='jet')
-    plt.colorbar()
-plt.show()
-'''

@@ -46,7 +46,6 @@ print(num_chan_noise)
 
 print(spec_avg[:num_chan_noise].mean(), spec_avg[:num_chan_noise].std())
 print(spec_avg[-num_chan_noise:].mean(), spec_avg[-num_chan_noise:].std())
-#print(spec_avg.mean(), spec_avg.std())
 
 #np.save('data_cube/spec_stack_'+line+'_'+region+'.npy', spec_avg)
 

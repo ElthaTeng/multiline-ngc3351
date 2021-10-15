@@ -33,11 +33,3 @@ plt.xlabel('R.A. (J2000)')
 plt.ylabel('Decl. (J2000)')
 plt.savefig('formal_plots/line_ratios/'+source+'_'+line_up+'_'+line_low+'_ratio.pdf', bbox_inches='tight', pad_inches=0.1)
 plt.show()
-
-# titles
-# (a) $\log \left( N_{CO}\cdot\frac{15\ km\ s^{-1}}{\Delta v}\right)$  $(cm^{-2})$
-# (b) $\log\ T_{kin}$  (K)
-# (c) $\log\ n_{H_2}$  $(cm^{-3})$
-# (d) $X_{12/13}$
-# (e) $X_{13/18}$
-# '(a) CO 2-1/1-0',r'(d) CO/$\rm {}^{13}CO$ 2-1',r'(e) CO/$\rm {C}^{18}O$ 2-1',r'(b) $\rm {}^{13}CO$ 3-2/2-1',r'(f) $\rm {}^{13}CO/C^{18}O$ 2-1',r'(g) $\rm {}^{13}CO/C^{18}O$ 3-2',r'(c) $\rm {C}^{18}O$ 3-2/2-1'))
