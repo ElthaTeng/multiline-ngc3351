@@ -10,7 +10,6 @@ def kpc2as(x):
 
 input = 'radius'
 two_category = False
-run_med = True
 model = '6d_coarse'
 mask = np.load('mask_whole_recovered.npy')*np.load('mask_rmcor_comb_lowchi2.npy')  #np.load('mask_cent3sig.npy') #* np.load('old_masks/mask_armscent.npy') + np.load('mask_poop.npy')  
 #(np.load('radex_model/chi2_4d_2comp.npy') < 10)  # #* np.load('mask_13co21_1sig.npy')
@@ -70,17 +69,6 @@ else:
     plt.errorbar(var, alpha_med, yerr=[err_y_low,err_y_up], linestyle='', marker='.', c='k', ecolor='gray', elinewidth=0.5)
     ax.plot(var, alpha, c='gray', marker='_', linestyle='')
     print(var.max())
-    if run_med:
-        argsort = np.argsort(var)
-        k = 51
-        filtered = scipy.signal.medfilt(alpha_med[argsort], kernel_size=k)
-        plt.plot(var[argsort][:-300], filtered[:-300], 'rx')
-        # total_bins = 10
-        # bins = np.linspace(var.min(),var.max(), total_bins)
-        # delta = bins[1]-bins[0]
-        # idx  = np.digitize(var,bins)
-        # running_median = [np.median(alpha_med[idx==k]) for k in range(total_bins)]
-        # plt.plot(bins-delta/2,running_median,'b--',lw=3,alpha=.8)
     ax.axhline(0.65, c='darkred', linestyle='--')
 ax.set_ylim(-2.5, 1.)
 if input == 'tau':
@@ -100,6 +88,4 @@ else:
 ax.set_ylabel(r'$\log\ \alpha_{CO}$ ($M_\odot\ (K\ km\ s^{-1}\ pc^2)^{-1}$)')
 plt.tight_layout()
 plt.show()
-
-#plt.scatter(X,Y,color='k',alpha=.2,s=2)
 
