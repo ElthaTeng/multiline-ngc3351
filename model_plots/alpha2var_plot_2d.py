@@ -4,7 +4,7 @@ from scipy import stats
 import matplotlib.lines as mlines
 from matplotlib.patches import Patch
 
-input = 'Tk'  # tau10 or Tk
+input = 'tau10'  # tau10 or Tk
 plot_type = 'density'  # scatter or density
 two_category = True
 model = '6d_coarse'
@@ -66,19 +66,19 @@ fig, ax = plt.subplots()
 if two_category:
     if plot_type == 'density':
         if input == 'tau10':
-            ax.contourf(X_2, Y_2, Z_2, cmap='Blues', label='Arms', levels=[0.1,0.2,0.3,0.4,0.5])
-            ax.contour(X, Y, Z, colors='darkred', label='Center', levels=[0.2,0.4,0.6,0.8,0.9])
-            ax.set_ylim(-2, 1.3)
+            ax.contour(X_2, Y_2, Z_2, colors='darkred', label='Arms', levels=[0.1,0.2,0.3,0.4,0.5], alpha=0.5)
+            ax.contourf(X, Y, Z, cmap='Blues', label='Center', levels=[0.2,0.4,0.6,0.8,0.9,1.])
+            
             ax.set_xlim(-3, 2)
         else:
-            ax.contourf(X_2, Y_2, Z_2, cmap='Blues', label='Arms', levels=[0.1,0.2,0.3,0.4,0.5,0.6,0.7])
-            ax.contour(X, Y, Z, colors='darkred', label='Center', levels=[0.2,0.4,0.6,0.8,1.0,1.2])
-            ax.set_ylim(-2.5, 1.5)
+            ax.contour(X_2, Y_2, Z_2, colors='darkred', label='Arms', levels=[0.1,0.2,0.3,0.4,0.5,0.6,0.7], alpha=0.5)
+            ax.contourf(X, Y, Z, cmap='Blues', label='Center', levels=[0.2,0.4,0.6,0.8,1.0,1.2,1.4])           
             ax.set_xlim(1., 2.3)
             # ax.imshow(np.rot90(Z), extent=[xmin, xmax, ymin, ymax])
-
-        center = mlines.Line2D([], [], color='darkred', label='Center')
-        arms = Patch(facecolor='tab:blue', label='Arms')
+        
+        ax.set_ylim(-2, 1.5)    
+        center = Patch(facecolor='tab:blue', label='Center')
+        arms = mlines.Line2D([], [], color='darkred', label='Arms')
 
         lprop = {'weight':'bold', 'size':'large'}
         plt.legend(handles=[center, arms],
