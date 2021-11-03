@@ -48,7 +48,7 @@
 If you use the scripts in your study, please cite Teng et al., "Molecular Gas Properties and CO-to-H2 Conversion Factors in the Central Kiloparsec of NGC 3351", 2021 (submitted to ApJ).
 
 [[homepage]](https://elthateng.github.io/projects/#galaxy-center)&nbsp;
-[[paper]](https://elthateng.github.io/files/NGC_3351_Paper_v5(R1).pdf)&nbsp;
+[[paper]](https://elthateng.github.io/files/NGC_3351_Paper_R1.pdf)&nbsp;
 [[AAS abstract]](https://elthateng.github.io/files/AAS_53(1).pdf)&nbsp;
 [[video]](https://www.youtube.com/watch?v=npK2DLqKiNE&t=1s)&nbsp;
 [[iposter]](https://aas237-aas.ipostersessions.com/?s=BD-90-5D-5F-84-83-BA-95-9C-63-F3-E8-D6-DF-ED-62)&nbsp;
