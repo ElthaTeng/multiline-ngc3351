@@ -1,14 +1,10 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.lines as mlines
 import time
 
 '''
 Assuming zero covariances between data, this script returns the minimum chi^2 
-value, the corresponding best-fit parameter set, and a contour plot showing the 
-six observational constraints and the best-fit solution. The chi^2 values of
-all parameter sets are saved as a 1D numpy array.  
-
+value and the corresponding best-fit parameter set from the two-component model.
+The chi^2 values of all parameter sets are saved as a 1D numpy array.  
 '''
 
 start_time = time.time()

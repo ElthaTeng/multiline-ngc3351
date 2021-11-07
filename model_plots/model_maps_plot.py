@@ -4,6 +4,8 @@ from matplotlib.colors import LogNorm
 from astropy.wcs import WCS
 from astropy.io import fits
 
+'''This script plots the model maps returned from model_maps_*.py'''
+
 model = '6d_coarse_rmcor_whole_los100'
 output_map = 'median_interp'
 sou_model = 'radex_model/'

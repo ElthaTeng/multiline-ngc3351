@@ -4,6 +4,14 @@ from astropy.io import fits
 from astropy.wcs import WCS
 from matplotlib.colors import LogNorm
 
+'''
+This script derives and visualizes the alpha_CO distribution directly from the inferred 
+CO column density (N_CO) and the observed CO intensity (I_CO). Note that this method fully 
+trusts the inferred N_CO and neglects possible correlation between N_CO, Phi_bf and I_CO 
+in the full grid. The alpha_CO results shown in the paper (i.e., Teng+21) are instead the 
+marginalized alpha_CO distribution derived from the full grid (model_maps_nocov_alpha.py). 
+'''
+
 # Load data
 fits_map = fits.open('data_image/NGC3351_CO10_ew_broad_nyq.fits')
 map_ew = fits_map[0].data

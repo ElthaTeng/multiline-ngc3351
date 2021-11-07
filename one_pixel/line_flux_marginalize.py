@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
+'''This script computes the marginalized likelihoods of the line intensities, and then 
+plots the 1D likelihood distributions given a chosen bin size and intensity range.'''
+
 region = 'arms'
 log_bins = False
 

@@ -4,6 +4,8 @@ from scipy import stats
 import matplotlib.lines as mlines
 from matplotlib.patches import Patch
 
+'''This script plots the density contours of the random-drawed points returned from random_draw_correlation.py'''
+
 input = 'tau10'  # tau10 or Tk
 plot_type = 'density'  # scatter or density
 two_category = True

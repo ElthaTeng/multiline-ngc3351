@@ -3,6 +3,10 @@ import numpy as np
 from joblib import Parallel, delayed
 from astropy.io import fits
 
+'''This script performs N_draw (= 1000) likelihood-weighted random draws from the input parameter grid 
+of alpha_CO and T_k or tau for all pixels in one or two region(s), and then saves the drawed samples as 
+a N_pix * N_draw numpy array for each parameter. '''
+
 start_time = time.time()
 
 two_category = True

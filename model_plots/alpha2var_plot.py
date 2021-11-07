@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.signal
+
+'''This script outputs the scatter plot of the median/1DMax alpha_CO versus another specified parameter.'''
 
 def as2kpc(x):
     return x * 0.0485

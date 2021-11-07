@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
+'''This script plots the regional averaged spectra (with stacking) and their best-fit Gaussian function.''' 
+
 def Gauss(x,peak,vlsr,delv):
     sig = delv / (2*(2*np.log(2))**0.5)
     G = peak * np.exp(-(x-vlsr)**2/(2*sig**2))
