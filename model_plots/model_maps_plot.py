@@ -9,7 +9,6 @@ from astropy.io import fits
 model = '6d_coarse_rmcor_whole_los100'
 output_map = 'median_interp'
 sou_model = 'radex_model/'
-source = 'NGC3351'
 mom0 = np.load('data_image/NGC3351_CO21_mom0.npy')
 mask = np.load('mask_whole_recovered.npy') #* np.load('mask_13co21_2sig.npy')
 
