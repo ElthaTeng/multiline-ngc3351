@@ -92,7 +92,7 @@ con_co10 = plt.contour(slice_co10,origin='lower',levels=np.array((flux_co10-err_
 con_co21 = plt.contour(slice_co21,origin='lower',levels=np.array((flux_co21-err_co21,flux_co21+err_co21)), extent=extent_nT, colors='k', linestyles='dashed')
 con_13co21 = plt.contour(slice_13co21,origin='lower',levels=np.array((flux_13co21-err_13co21,flux_13co21+err_13co21)), extent=extent_nT, colors='c')
 con_13co32 = plt.contour(slice_13co32,origin='lower',levels=np.array((flux_13co32-err_13co32,flux_13co32+err_13co32)), extent=extent_nT, colors='b', linestyles='dotted')
-con_c18o21 = plt.contour(slice_c18o21,origin='lower',levels=np.array((flux_c18o21-err_c18o21,flux_c18o21+err_c18o32)), extent=extent_nT, colors='m')
+con_c18o21 = plt.contour(slice_c18o21,origin='lower',levels=np.array((flux_c18o21-err_c18o21,flux_c18o21+err_c18o21)), extent=extent_nT, colors='m')
 con_c18o32 = plt.contour(slice_c18o32,origin='lower',levels=np.array((flux_c18o32-err_c18o32,flux_c18o32+err_c18o32)), extent=extent_nT, colors='r', linestyles='dashdot')
 
 plt.gca().clabel(con_co10, inline=1, fontsize=10, fmt='%1.1f')
