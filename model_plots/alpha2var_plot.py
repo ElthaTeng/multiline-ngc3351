@@ -12,8 +12,7 @@ def kpc2as(x):
 input = 'radius'
 two_category = False
 model = '6d_coarse'
-mask = np.load('mask_whole_recovered.npy')*np.load('mask_rmcor_comb_lowchi2.npy')  #np.load('mask_cent3sig.npy') #* np.load('old_masks/mask_armscent.npy') + np.load('mask_poop.npy')  
-#(np.load('radex_model/chi2_4d_2comp.npy') < 10)  # #* np.load('mask_13co21_1sig.npy')
+mask = np.load('mask_whole_recovered.npy')*np.load('mask_rmcor_comb_lowchi2.npy') 
 mask[35,43] = 0 
 mask = mask.reshape(-1)
 

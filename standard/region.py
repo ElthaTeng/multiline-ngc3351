@@ -40,6 +40,7 @@ plt.imshow(reg_ring, origin='lower', cmap=cmap_ring, vmin=0, vmax=1)
 plt.imshow(reg_arms, origin='lower', cmap=cmap_arms, vmin=0, vmax=1)
 
 plt.tick_params(axis="y", labelleft=False)
+plt.tick_params(axis="x", labelbottom=True, labelsize=14)
 
 ring = Patch(facecolor='gold')
 nucleus = Patch(facecolor='magenta')
@@ -59,7 +60,7 @@ plt.gca().clabel(cont_radius, inline=1, fontsize=10, fmt='%1.0f', manual=manual_
 plt.xlim(15,60)
 plt.ylim(15,60)
 plt.title('(c) Definition of Regions', fontsize=16)
-plt.xlabel('R.A. (J2000)') #
+plt.xlabel('R.A. (J2000)', fontsize=14) #
 plt.ylabel(' ') #Decl. (J2000)
 plt.savefig('formal_plots/region_def.pdf', bbox_inches='tight', pad_inches=0.1)
 plt.show()

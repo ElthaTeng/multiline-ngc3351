@@ -4,9 +4,7 @@ from scipy import stats
 import matplotlib.lines as mlines
 from matplotlib.patches import Patch
 
-'''This script plots the density contours of the random-drawed points returned from random_draw_correlation.py'''
-
-input = 'tau10'  # tau10 or Tk
+input = 'Tk'  # tau10 or Tk
 plot_type = 'density'  # scatter or density
 two_category = True
 model = '6d_coarse'
@@ -76,7 +74,6 @@ if two_category:
             ax.contour(X_2, Y_2, Z_2, colors='darkred', label='Arms', levels=[0.1,0.2,0.3,0.4,0.5,0.6,0.7], alpha=0.5)
             ax.contourf(X, Y, Z, cmap='Blues', label='Center', levels=[0.2,0.4,0.6,0.8,1.0,1.2,1.4])           
             ax.set_xlim(1., 2.3)
-            # ax.imshow(np.rot90(Z), extent=[xmin, xmax, ymin, ymax])
         
         ax.set_ylim(-2, 1.5)    
         center = Patch(facecolor='tab:blue', label='Center')
@@ -86,11 +83,11 @@ if two_category:
         plt.legend(handles=[center, arms],
                 labels=['Center', 'Arms'],
                 ncol=1, handletextpad=0.5, handlelength=1.0, columnspacing=0.5, prop=lprop,
-                loc='lower right', fontsize=18)
+                loc='upper right', fontsize=18)
     else:
         ax.plot(var_2, alpha_2, c='darkblue', marker='.', linestyle='', label='Arms')
         ax.plot(var, alpha, c='darkred', marker='.', linestyle='', label='Center')  
-        ax.legend(fontsize=12)  #, loc='lower right'  
+        ax.legend(fontsize=12)  
         ax.set_ylim(-2.5, 1.5)
         if input == 'tau10':
             ax.set_xlim(-2.5, 1.5)
@@ -104,10 +101,13 @@ else:
     ax.set_xlim(-2.5, 1.5)
 
 if input == 'tau10':
-    ax.set_xlabel(r'$\log\ \tau_{\rm CO(1-0)}$')
+    ax.set_xlabel(r'$\log\ \tau_{\rm CO(1-0)}$', fontsize=14)
 elif input == 'Tk':
-    ax.set_xlabel(r'$\log\ T_{\rm k}$ (K)')
-ax.set_ylabel(r'$\log\ \alpha_{CO}$ ($M_\odot\ (K\ km\ s^{-1}\ pc^2)^{-1}$)')
+    ax.set_xlabel(r'$\log\ T_{\rm k}$ (K)', fontsize=14)
+ax.set_ylabel(r'$\log\ \alpha_{CO}$ ($M_\odot\ (K\ km\ s^{-1}\ pc^2)^{-1}$)', fontsize=14)
+
+plt.tick_params(axis="y", labelsize=12, labelleft=True)
+plt.tick_params(axis="x", labelsize=12, labelbottom=True)
 
 plt.tight_layout()
 plt.show()

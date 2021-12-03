@@ -21,11 +21,10 @@ for i in range(6):
     
     zeros = np.ma.masked_where(~(mom0 == 0), mom0)
     plt.imshow(mom0, cmap='hot', origin='lower')
-    plt.colorbar()
+    cbar = plt.colorbar()
+    cbar.ax.tick_params(labelsize=14)
     plt.imshow(zeros, origin='lower', cmap='Pastel2_r')
-    
-    #cbar = plt.colorbar()
-    #cbar.ax.tick_params(labelsize=11) 
+
     if i == 0:
         ax.annotate("contact", color='b', fontsize=14,
             xy=(34,43.5), xycoords='data',
@@ -45,17 +44,19 @@ for i in range(6):
         plt.plot([47, 57], [20, 20], 'b-', lw=3)
         plt.annotate('500 pc', weight='bold', fontsize=14, xy=(47.5, 17), xycoords='data', color='b')
     
-    plt.title(title[i], fontsize=14)
+    plt.title(title[i], fontsize=18)
     plt.xlim(15,60)   
     plt.ylim(15,60)  
-    
+    plt.tick_params(axis="x", labelsize=14)
+    plt.tick_params(axis="y", labelsize=14)
+
     if i//3 == 0:
         plt.xlabel(' ')
         plt.tick_params(axis="x", labelbottom=False)
     else:
-        plt.xlabel('R.A. (J2000)')
+        plt.xlabel('R.A. (J2000)', fontsize=16)
     if i%3 == 0:
-        plt.ylabel('Decl. (J2000)')
+        plt.ylabel('Decl. (J2000)', fontsize=16)
     else:
         plt.ylabel(' ')
         plt.tick_params(axis="y", labelleft=False)
