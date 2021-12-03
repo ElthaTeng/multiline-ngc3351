@@ -15,9 +15,9 @@ source = 'NGC3351'
 start_time = time.time()
 print('Constructing inputs for corner plot...')
 
-stack = True  # Set this
+stack = False  # Set this
 model = '6d_coarse_rmcor'
-sou_model = 'radex_model/'
+sou_model = 'radex_model/ngc3351_npy/'
 
 if stack:
     region = 'arms'  # Set this
@@ -92,20 +92,28 @@ prob = prob * mask
 
 # Corner plot
 ndim = 6
-max1d = np.array((18.4,1.1,3.2,10,6.5,0.05))
-median = np.array((18.4,1.6,3.6,80,6.5,0.2))
+max1d = np.array((18.8,1.4,3.,20,9.5,0.25))
+median = np.array((18.6,1.4,3.2,90,11,0.3))
 input = np.stack((N_co, T_k, n_h2, X_12to13, X_13to18, phi), axis=-1)
 
 corner_time = time.time()
 print(corner_time-start_time, 'sec elapsed. Generating corner plot')
 figure = corner.corner(input, bins=[size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi], plot_datapoints=False, 
                        labels=[r"$\log \left( N_{CO}\cdot\frac{15\ km\ s^{-1}}{\Delta v}\right)$", r"$\log(T_k)$", r"$\log(n_{H_2})$", r"$X_{12/13}$", r"$X_{13/18}$", r"$\Phi_{bf}$"], range=[(15.9,21.1),(0.95,2.35),(1.9,5.1),(5,205),(1.25,20.75),(0.025,1.025)],
-                       label_kwargs={"fontsize": 18}, show_titles=True, title_fmt=None, title_kwargs={"fontsize": 14}, weights=prob)
+                       label_kwargs={"fontsize": 16}, show_titles=True, title_fmt=None, title_kwargs={"fontsize": 18}, weights=prob)
 axes = np.array(figure.axes).reshape((ndim, ndim))
 for i in range(ndim):
     ax = axes[i, i]
-    ax.axvline(max1d[i], color="k", linestyle='dashed')
-    ax.axvline(median[i], color="k", linestyle='dotted')
+    ax.axvline(max1d[i], color="k", linestyle='dashed', linewidth=2)
+    ax.axvline(median[i], color="k", linestyle='dotted', linewidth=2)
+    ax.grid(b=True, axis='x', color='lightgrey', linestyle='dotted', linewidth=1)
+    ax.tick_params(axis="x", labelsize=14)
+for yi in range(ndim):
+    for xi in range(yi):
+        ax = axes[yi, xi]
+        ax.grid(b=True, color='lightgrey', linestyle='dotted', linewidth=1)
+        ax.tick_params(axis="x", labelsize=14)
+        ax.tick_params(axis="y", labelsize=14)
 if stack:
     plt.savefig(sou_model+'corner_'+model+'_'+region+'_los100_vline.pdf')
 else:
