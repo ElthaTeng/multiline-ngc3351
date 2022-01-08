@@ -1,8 +1,6 @@
 import time
 import numpy as np
-import matplotlib.pyplot as plt
 from joblib import Parallel, delayed
-import corner
 from astropy.io import fits
 
 '''
@@ -123,21 +121,6 @@ def chi2_prob(x,y):
     prob = np.nan_to_num(np.exp(-0.5 * chi_sum)).reshape(-1)   
     return chi_sum.reshape(-1), prob
 
-def bestfit_maps(x,y):   
-    los_length = (10**Nco / 15. * map_fwhm[y,x]) / (np.sqrt(phi) * 10**nH2 * x_co)
-    mask = los_length < los_max * (3.086 * 10**18)
-    chi2, _ = chi2_prob(x,y)
-    chi2 = np.array(chi2) * mask
-    chi2[mask==0] = np.nan
-    
-    if (np.isnan(chi2)).all():
-        return x, y, np.nan
-    else:
-        chi2_min = np.nanmin(chi2)
-        idx_min = np.unravel_index(np.nanargmin(chi2), (size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
-        out_value = model_co10[idx_min]
-        return x, y, out_value
-
 def prob1d_maps(x,y):  
     chi2, prob = chi2_prob(x,y)
     if two_comp == False:
@@ -179,27 +162,18 @@ def prob1d_maps(x,y):
 
 print('Start multi-processing on output maps')
  
-if output_map == 'bestfit':
-    results = Parallel(n_jobs=10, verbose=10)(delayed(bestfit_maps)(x,y) for x in range(20,55) for y in range(20,55))           
-    for result in results:
-        x, y, out_value = result  
-        map_out[y,x] = out_value
+results = Parallel(n_jobs=5, verbose=10)(delayed(prob1d_maps)(x,y) for x in range(20,55) for y in range(20,55))           
+for result in results:
+    x, y, out_1dmax, out_neg1sig, out_median, out_pos1sig = result 
+    map_1dmax[y,x] = out_1dmax
+    map_neg1sig[y,x] = out_neg1sig
+    map_median[y,x] = out_median
+    map_pos1sig[y,x] = out_pos1sig
 
-    np.save(sou_model+'Imod_'+model+'_'+output_map+'.npy', map_out)
-    
-else:
-    results = Parallel(n_jobs=5, verbose=10)(delayed(prob1d_maps)(x,y) for x in range(20,55) for y in range(20,55))           
-    for result in results:
-        x, y, out_1dmax, out_neg1sig, out_median, out_pos1sig = result 
-        map_1dmax[y,x] = out_1dmax
-        map_neg1sig[y,x] = out_neg1sig
-        map_median[y,x] = out_median
-        map_pos1sig[y,x] = out_pos1sig
-
-    np.save(sou_model+'Xco_'+model+'_'+output_map+'_1dmax_los100.npy', map_1dmax)
-    np.save(sou_model+'Xco_'+model+'_'+output_map+'_neg1sig_los100.npy', map_neg1sig)
-    np.save(sou_model+'Xco_'+model+'_'+output_map+'_median_los100.npy', map_median)
-    np.save(sou_model+'Xco_'+model+'_'+output_map+'_pos1sig_los100.npy', map_pos1sig)
+np.save(sou_model+'Xco_'+model+'_'+output_map+'_1dmax_los100.npy', map_1dmax)
+np.save(sou_model+'Xco_'+model+'_'+output_map+'_neg1sig_los100.npy', map_neg1sig)
+np.save(sou_model+'Xco_'+model+'_'+output_map+'_median_los100.npy', map_median)
+np.save(sou_model+'Xco_'+model+'_'+output_map+'_pos1sig_los100.npy', map_pos1sig)
     
 print('Output maps constructed.')
 
