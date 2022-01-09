@@ -47,15 +47,6 @@ alpha[mask == 0] = np.nan
 alpha = np.log10(alpha)
 print(np.nanmax(alpha), np.nanmin(alpha))
 
-idx_min = np.unravel_index(np.nanargmin(alpha), (size_N,size_T,size_n,size_x12to13,size_x13to18,size_phi))
-N_value = idx_min[0] * (samples_Nco[1] - samples_Nco[0]) + samples_Nco[0]
-T_value = idx_min[1] * (samples_Tk[1] - samples_Tk[0]) + samples_Tk[0]
-n_value = idx_min[2] * (samples_nH2[1] - samples_nH2[0]) + samples_nH2[0]
-X1_value = idx_min[3] * (samples_X12to13[1] - samples_X12to13[0]) + samples_X12to13[0]
-X2_value = idx_min[4] * (samples_X13to18[1] - samples_X13to18[0]) + samples_X13to18[0]
-phi_value = idx_min[5] * (samples_phi[1] - samples_phi[0]) + samples_phi[0]
-print(N_value, T_value, n_value, X1_value, X2_value, phi_value)
-
 # Compute masked chi2 and prob
 chi2 = np.load(sou_model+'chi2_'+model+'_'+str(idx_x)+'_'+str(idx_y)+'.npy').reshape(-1)
 prob = np.exp(-0.5*chi2).reshape(-1)
