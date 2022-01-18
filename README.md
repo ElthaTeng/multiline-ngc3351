@@ -50,6 +50,6 @@ If you use the script(s) in your study, please cite Teng et al., "Molecular Gas 
 [[homepage]](https://elthateng.github.io/projects/#galaxy-center)&nbsp;
 [[paper]](https://arxiv.org/abs/2111.05844)&nbsp;
 [[AAS abstract]](https://elthateng.github.io/files/AAS_53(1).pdf)&nbsp;
-[[video]](https://www.youtube.com/watch?v=npK2DLqKiNE&t=1s)&nbsp;
+[[video]](https://youtu.be/aZUoEkiZJK4)&nbsp;
 [[poster]](https://aas237-aas.ipostersessions.com/?s=BD-90-5D-5F-84-83-BA-95-9C-63-F3-E8-D6-DF-ED-62)&nbsp;
 [[slides]](https://elthateng.github.io/files/cass_talk.pdf)&nbsp;
