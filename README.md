@@ -40,7 +40,7 @@
 
  1. N_co, T_k, and n_H2 should be sampled in log scale and with consistent step size in each parameter.
  2. The step size for Nco and nH2 should be the same.
- 3. This code assumes a constant line width, since the variation of line widths do not have much effect on RADEX results. See [1] in References for more details.
+ 3. This code assumes a constant line width, since the variation of line widths do not have much effect on RADEX results.
 
 
 ## Paper
