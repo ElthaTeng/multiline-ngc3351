@@ -43,7 +43,7 @@
  3. This code assumes a constant line width, since the variation of line widths do not have much effect on RADEX results.
 
 
-## Paper
+## Citation
 
 If you use the script(s) in your study, please cite Teng et al., "Molecular Gas Properties and CO-to-H2 Conversion Factors in the Central Kiloparsec of NGC 3351", 2022, *The Astrophysical Journal (ApJ)*, 925, 72.
 
