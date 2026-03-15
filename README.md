@@ -48,7 +48,7 @@ This document describes *radex_pipeline.py*, which is the first step needed for 
 
 ## Citation
 
-If you use the script(s) in your study, please cite Teng et al., "Molecular Gas Properties and CO-to-H2 Conversion Factors in the Central Kiloparsec of NGC 3351", 2022, *The Astrophysical Journal (ApJ)*, 925, 72.
+If you use or reference these script(s) in your work, please cite Teng et al., "Molecular Gas Properties and CO-to-H2 Conversion Factors in the Central Kiloparsec of NGC 3351", 2022, *The Astrophysical Journal (ApJ)*, 925, 72.
 
 [[homepage]](https://elthateng.github.io/projects/#galaxy-center)&nbsp;
 [[paper]](https://iopscience.iop.org/article/10.3847/1538-4357/ac382f)&nbsp;
